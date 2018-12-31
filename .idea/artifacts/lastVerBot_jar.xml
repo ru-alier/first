@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="lastVerBot:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/lastVerBot_jar</output-path>
+    <root id="archive" name="lastVerBot.jar">
+      <element id="module-output" name="lastVerBot" />
+    </root>
+  </artifact>
+</component>
