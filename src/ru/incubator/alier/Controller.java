@@ -10,7 +10,7 @@ public class Controller extends Thread {
     //    Класс для проверки условий и запуска потоков
     private boolean updateDateInBaseOn = true;
     //    final public boolean QUERY_SORT_IN_APPLICATION = true;
-    int threadCount = 2000;
+    private int threadCount = 2000;
     private Date enteredDate;
 
     void init(String[] argDate) {
@@ -29,11 +29,8 @@ public class Controller extends Thread {
     }
 
     void starting() throws SQLException {
-//        int id;
         String schemaDBName = "tempdb";
         Semaphore turn = new Semaphore(threadCount);
-//        String currentUrl;
-//        Date dbDate;
 
         //Соединение с базой
         DBProcessor dbProcessor = new DBProcessor();
@@ -49,27 +46,15 @@ public class Controller extends Thread {
 //            System.out.println("ID: " + id + "  DATE! :" + dbDate);
             if (dbDate != null) {
                 if (dateProcessor.goodDate(enteredDate, dbDate)) {
-                    UrlStatusCheck urlStatusCheck = new UrlStatusCheck();
-//                    UrlStatusCheckNew urlStatusCheck = new UrlStatusCheckNew();
-                    urlStatusCheck.turn = turn;
-                    urlStatusCheck.updateDateInBaseOn = updateDateInBaseOn;
-                    urlStatusCheck.curUrl = currentUrl;
-                    urlStatusCheck.id = id;
-                    urlStatusCheck.schema_Table = schemaDBName;
-                    urlStatusCheck.dbProcessor = dbProcessor;
+//                  Приведение к принцыпу инкапсуляции, передаем параметры в конструкторе, а не на прямую.
+                    UrlStatusCheck urlStatusCheck = new UrlStatusCheck(turn, updateDateInBaseOn, currentUrl, id, schemaDBName, dbProcessor);
                     urlStatusCheck.start();
                     dbProcessor.getConnection().close();
                 }
             } else if (updateDateInBaseOn) {
 //                System.out.print(" goodDate: ");
-                UrlStatusCheck urlStatusCheck = new UrlStatusCheck();
-//                    UrlStatusCheckNew urlStatusCheck = new UrlStatusCheckNew();
-                urlStatusCheck.turn = turn;
-                urlStatusCheck.updateDateInBaseOn = updateDateInBaseOn;
-                urlStatusCheck.curUrl = currentUrl;
-                urlStatusCheck.id = id;
-                urlStatusCheck.schema_Table = schemaDBName;
-                urlStatusCheck.dbProcessor = dbProcessor;
+//              Приведение к принцыпу инкапсуляции, передаем параметры в конструкторе, а не на прямую.
+                UrlStatusCheck urlStatusCheck = new UrlStatusCheck(turn, true, currentUrl, id, schemaDBName, dbProcessor);
                 urlStatusCheck.start();
                 dbProcessor.getConnection().close();
 //                System.out.println("- it's worked!");
@@ -77,18 +62,4 @@ public class Controller extends Thread {
                 System.out.println("Записть не требует обновления и пропущена");
         }
     }
-
-
-/*    void startRD() throws SQLException, IOException, ExecutionException, InterruptedException {
-        //Чтение БД
-        ReadDB readDB = new ReadDB();
-//        ResultSet resultSet = readDB.readDB("incubator.tempdb" );
-        ResultSet resultSet = readDB.getDB("tempdb");
-        DateProcessor dateProcessor = new DateProcessor();
-
-        while (resultSet.next()) {
-            System.out.println("ID: " + resultSet.getInt("id") + ", url: " + resultSet.getString("url") + ", status code:" + resultSet.getInt("status") + ", дата обновления: " + resultSet.getDate("date"));
-        }
-
-    }*/
 }

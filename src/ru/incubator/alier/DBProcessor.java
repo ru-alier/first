@@ -3,21 +3,22 @@ package ru.incubator.alier;
 import java.sql.*;
 
 public class DBProcessor {
+//      private String URL = "jdbc:mysql://46.161.156.88:3307/incubator?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true";
+        private String URL = "jdbc:mysql://46.161.156.88:3306/incubator?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+        private String USERNAME = "username";
+        private String PASSWORD = "password";
+/*    private String URL = "jdbc:mysql://localhost:3306/incubator?useSSL=false&useUnicode=true";
+    private String USERNAME = "root";
+    private String PASSWORD = "root";*/
+    private String driver = "com.mysql.jdbc.Driver";
+
 
     public Connection getConnection() {
-        String URL = "jdbc:mysql://46.161.156.88:3306/incubator?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-//        String URL = "jdbc:mysql://46.161.156.88:3307/incubator?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true";
-        String USERNAME = "username";
-        String PASSWORD = "password";
 
-/*        String URL = "jdbc:mysql://localhost:3306/incubator?useSSL=false&useUnicode=true";
-        String USERNAME = "root";
-        String PASSWORD = "root";*/
-//        String driver = "mysql-connector-java-8.0.13.jar";
-        String driver = "com.mysql.jdbc.Driver";
         Connection conn = null;
         try {
             Class.forName(driver).newInstance();
+//TODO обработать java.sql.SQLNonTransientConnectionException: Data source rejected establishment of connection,  message from server: "Too many connections"
             conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
 //            if (conn != null)
 ////                System.out.println("Приложение подключилось к БД !");
@@ -78,10 +79,7 @@ public class DBProcessor {
             query = "UPDATE " + schema_Table + " SET status=" + statusCode + ", date=" + dateNow + " WHERE id=" + id + ";";
 
         }
-//        System.out.println("Текст запроса" + query);
-
         //      Соединение с базой
-//        DBProcessor db = new DBProcessor();
         Connection conn = null;
         conn= dbProcessor.getConnection();
         Statement statement = null;
@@ -91,6 +89,7 @@ public class DBProcessor {
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+            System.out.println("Ошибка формирования или обработки SQL запроса. ");
         }
 
         return true;
